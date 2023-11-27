@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang='en'>
-    <head>TEST HOME PAGE</head>
-    <body>
-        <a href="./googlecalendar.html"><h2>Google Calendar Link</h2></a>
-        <a href="./outlookcalendar.html"><h2>Outlook Calendar Link</h2></a>
-    </body>
-
-
-
-
-<!DOCTYPE html>
 <html>
   <head>
-    <title>Google Calendar API Quickstart</title>
+    <title>Test Home Page</title>
     <meta charset="utf-8" />
+    <style>
+      h1 {text-align: center;}
+      a {text-align: center;}
+    </style>
   </head>
   <body>
+    <h1>Home Page</h1>
+    <a href="./googlecalendar.html"><h2>Google Calendar Link</h2></a>
+    <a href="./outlookcalendar.html"><h2>Outlook Calendar Link</h2></a>
 
     <!--Add buttons to initiate auth sequence and sign out-->
     <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
@@ -159,3 +155,8 @@
             'Events:\n');
         document.getElementById('content').innerText = output;
       }
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+  </body>
+</html>
