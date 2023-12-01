@@ -1,162 +1,208 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Test Home Page</title>
-    <meta charset="utf-8" />
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Senior Design Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
     <style>
-      h1 {text-align: center;}
-      a {text-align: center;}
+        body, h1, h2, h3, h4, h5 {
+            font-family: "Poppins", sans-serif;
+            background: #4F583D;
+            font-style: #FFF;
+            color: #FFF;
+        }
+
+        body {
+            font-size: 16px;
+        }
+
+        .w3-half img {
+            margin-bottom: -6px;
+            margin-top: 16px;
+            opacity: 0.8;
+            cursor: pointer
+        }
+
+            .w3-half img:hover {
+                opacity: 1
+            }
     </style>
-  </head>
-  <body>
-    <h1>Home Page</h1>
-    <a href="./googlecalendar.html"><h2>Google Calendar Link</h2></a>
-    <a href="./outlookcalendar.html"><h2>Outlook Calendar Link</h2></a>
+</head>
+<body>
 
-    <!--Add buttons to initiate auth sequence and sign out-->
-    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+    <!-- Color codes: #8A584C #8FA6AC #F5EACF #CEB793 #85865F #4F583D -->
 
-    <pre id="content" style="white-space: pre-wrap;"></pre>
 
-    <script type="text/javascript">
-      /* exported gapiLoaded */
-      /* exported gisLoaded */
-      /* exported handleAuthClick */
-      /* exported handleSignoutClick */
+    <!-- Sidebar/menu -->
+    <nav class="w3-sidebar w3-collapse w3-top w3-large w3-padding" style="z-index: 3; width: 300px; font-weight: bold; background:#85865F; font: #fff; " id="mySidebar">
+        <br>
+        <body style="background-color: p#8FA6AC;">
+            <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
+            <div class="w3-container">
+                <h3 class="w3-padding-64"><b>FileOrgan<br></b></h3>
+            </div>
+            <div class="w3-bar-block">
+                <body style="background-color: #CEB793;">
+                    <a href="#" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Home</a>
+                    <a href="./signinpage.html" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Calendar</a>
+                    <!-- <a href="#services" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Services</a> -->
+                    <a href="#designers" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Our Team</a>
+                    <!--  <a href="#packages" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Packages</a> -->
+                    <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Contact</a>
+            </div>
+    </nav>
 
-      // TODO(developer): Set to client ID and API key from the Developer Console
-      const CLIENT_ID = '91502832743-1e9ug7bkq61jiq32m4mlvug40nvvjrqb.apps.googleusercontent.com';
-      const API_KEY = 'AIzaSyBHvj9aWJcrCtyYh1o6UtAGkR2UyjfOFrE';
+    <!-- Top menu on small screens -->
+    <header class="w3-container w3-top w3-hide-large #8A584C w3-xlarge w3-padding">
+        <!-- w3-red -->
+        <a href="javascript:void(0)" class="w3-button #8FA6AC w3-margin-right" onclick="w3_open()">☰</a> <!-- w3-red -->
+        <span>FileOrgan Senior Design Project Showcase</span>
+    </header>
 
-      // Discovery doc URL for APIs used by the quickstart
-      const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+    <!-- Overlay effect when opening sidebar on small screens -->
+    <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
-      // Authorization scopes required by the API; multiple scopes can be
-      // included, separated by spaces.
-      const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:340px;margin-right:40px; color: #fff">
+        <body style="background-color: #CEB793;">
 
-      let tokenClient;
-      let gapiInited = false;
-      let gisInited = false;
+            <!-- Header w3-text-red -->
+            <div class="w3-container" style="margin-top:80px" id="showcase">
+                <h1 class="w3-jumbo"><b>FileOrgan</b></h1>
+                <h1 class="w3-xxxlarge #8A584C"><b>Senior Design Project Showcase</b></h1> <!-- w3-text-red -->
+                <hr style="width: 50px; border: 5px #8FA6AC" class="w3-round"> <!-- solid red -->
+            </div>
 
-      document.getElementById('authorize_button').style.visibility = 'hidden';
-      document.getElementById('signout_button').style.visibility = 'hidden';
+            <!-- Photo grid -->
+            <div class="w3-row-padding">
+                <div class="w3-half">
+                    <!--<img src="/FileOrgan1.png" style="width:100%" onclick="onClick(this)" alt="Calendar Example">-->
+                    <img src="Fall2023/FileOrgan1.png" alt="Project Pic 1">
+                    <img src="./FileOrgan2.png" style="width:100%" onclick="onClick(this)" alt="Project Pic 2">
+                    <img src="./FileOrgan3.png" style="width:100%" onclick="onClick(this)" alt="Project Pic 3">
+                </div>
 
-      /**
-       * Callback after api.js is loaded.
-       */
-      function gapiLoaded() {
-        gapi.load('client', initializeGapiClient);
-      }
+        <div class="w3-half">
+            <img src="./FileOrgan4.png" style="width:100%" onclick="onClick(this)" alt="Project Pic 4">
+            <img src="./FileOrgan5.png" style="width:100%" onclick="onClick(this)" alt="Project Pic 5">
+            <img src="./FileOrgan7.png" style="width:100%" onclick="onClick(this)" alt="Project Pic 6">
+        </div>
+    </div>
 
-      /**
-       * Callback after the API client is loaded. Loads the
-       * discovery doc to initialize the API.
-       */
-      async function initializeGapiClient() {
-        await gapi.client.init({
-          apiKey: API_KEY,
-          discoveryDocs: [DISCOVERY_DOC],
-        });
-        gapiInited = true;
-        maybeEnableButtons();
-      }
+    <!-- Modal for full size images on click-->
+                    <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
+                        <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
+                        <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+                            <img id="img01" class="w3-image">
+                            <p id="caption"></p>
+                        </div>
+                    </div>
 
-      /**
-       * Callback after Google Identity Services are loaded.
-       */
-      function gisLoaded() {
-        tokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: CLIENT_ID,
-          scope: SCOPES,
-          callback: '', // defined later
-        });
-        gisInited = true;
-        maybeEnableButtons();
-      }
+                    <!-- Designers -->
+                    <div class="w3-container" id="designers" style="margin-top:75px">
+                        <h1 class="w3-xxxlarge"><b>Our team.</b></h1>
+                        <hr style="width:50px;border:5px" class="w3-round">
 
-      /**
-       * Enables user interaction after all libraries are loaded.
-       */
-      function maybeEnableButtons() {
-        if (gapiInited && gisInited) {
-          document.getElementById('authorize_button').style.visibility = 'visible';
+                    </div>
+
+                    <!-- The Team -->
+                    <div class="w3-row-padding w3-grayscale" color: #fff">
+                        <div class="w3-col m4 w3-margin-bottom">
+                            <div class="w3-light-grey">
+                                <div class="w3-container">
+                                    <h3>Abigail Rotherham</h3>
+                                    <!-- <p class="w3-opacity">CEO & Founder</p> -->
+                                    <p>FileOrgan team.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w3-col m4 w3-margin-bottom">
+                            <div class="w3-light-grey">
+                                <div class="w3-container">
+                                    <h3>Emma Benson</h3>
+                                    <!-- <p class="w3-opacity">CEO & Founder</p> -->
+                                    <p>FileOrgan team.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w3-col m4 w3-margin-bottom">
+                            <div class="w3-light-grey">
+                                <div class="w3-container">
+                                    <h3>Julia Wayne</h3>
+                                    <!-- <p class="w3-opacity">CEO & Founder</p> -->
+                                    <p>FileOrgan team.<p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-col m4 w3-margin-bottom">
+                            <div class="w3-light-grey">
+                                <div class="w3-container">
+                                    <h3>Udeh Ndukwe</h3>
+                                    <!-- <p class="w3-opacity">CEO & Founder</p> -->
+                                    <p>FileOrgan team.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w3-col m4 w3-margin-bottom">
+                            <div class="w3-light-grey">
+                                <div class="w3-container">
+                                    <h3>Jackson Lawrence</h3>
+                                    <!-- <p class="w3-opacity">CEO & Founder</p> -->
+                                    <p>FileOrgan team.</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="w3-container" id="contact" style="margin-top:75px">
+                        <h1 class="w3-xxxlarge"><b>Contact.</b></h1>
+                        <hr style="width:50px;border:5px" class="w3-round">
+                        <p>Contact the FileOrgan team.</p>
+                        <form action="/action_page.php" target="_blank">
+                            <div class="w3-section">
+                                <label>Name</label>
+                                <input class="w3-input w3-border" type="text" name="Name" required>
+                            </div>
+                            <div class="w3-section">
+                                <label>Email</label>
+                                <input class="w3-input w3-border" type="text" name="Email" required>
+                            </div>
+                            <div class="w3-section">
+                                <label>Message</label>
+                                <input class="w3-input w3-border" type="text" name="Message" required>
+                            </div>
+                            <button type="submit" class="w3-button w3-block w3-padding-large w3-margin-bottom">Send Message</button>
+                        </form>
+                    </div>
+
+                    <!-- End page content -->
+                </div>
+
+
+    <script>// Script to open and close sidebar
+        function w3_open() {
+            document.getElementById("mySidebar").style.display = "block";
+            document.getElementById("myOverlay").style.display = "block";
         }
-      }
 
-      /**
-       *  Sign in the user upon button click.
-       */
-      function handleAuthClick() {
-        tokenClient.callback = async (resp) => {
-          if (resp.error !== undefined) {
-            throw (resp);
-          }
-          document.getElementById('signout_button').style.visibility = 'visible';
-          document.getElementById('authorize_button').innerText = 'Refresh';
-          await listUpcomingEvents();
-        };
-
-        if (gapi.client.getToken() === null) {
-          // Prompt the user to select a Google Account and ask for consent to share their data
-          // when establishing a new session.
-          tokenClient.requestAccessToken({prompt: 'consent'});
-        } else {
-          // Skip display of account chooser and consent dialog for an existing session.
-          tokenClient.requestAccessToken({prompt: ''});
-        }
-      }
-
-      /**
-       *  Sign out the user upon button click.
-       */
-      function handleSignoutClick() {
-        const token = gapi.client.getToken();
-        if (token !== null) {
-          google.accounts.oauth2.revoke(token.access_token);
-          gapi.client.setToken('');
-          document.getElementById('content').innerText = '';
-          document.getElementById('authorize_button').innerText = 'Authorize';
-          document.getElementById('signout_button').style.visibility = 'hidden';
-        }
-      }
-
-      /**
-       * Print the summary and start datetime/date of the next ten events in
-       * the authorized user's calendar. If no events are found an
-       * appropriate message is printed.
-       */
-      async function listUpcomingEvents() {
-        let response;
-        try {
-          const request = {
-            'calendarId': 'primary',
-            'timeMin': (new Date()).toISOString(),
-            'showDeleted': false,
-            'singleEvents': true,
-            'maxResults': 10,
-            'orderBy': 'startTime',
-          };
-          response = await gapi.client.calendar.events.list(request);
-        } catch (err) {
-          document.getElementById('content').innerText = err.message;
-          return;
+        function w3_close() {
+            document.getElementById("mySidebar").style.display = "none";
+            document.getElementById("myOverlay").style.display = "none";
         }
 
-        const events = response.result.items;
-        if (!events || events.length == 0) {
-          document.getElementById('content').innerText = 'No events found.';
-          return;
-        }
-        // Flatten to string to display
-        const output = events.reduce(
-            (str, event) => `${str}${event.summary} (${event.start.dateTime || event.start.date})\n`,
-            'Events:\n');
-        document.getElementById('content').innerText = output;
-      }
-    </script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-  </body>
+        // Modal Image Gallery
+        function onClick(element) {
+            document.getElementById("img01").src = element.src;
+            document.getElementById("modal01").style.display = "block";
+            var captionText = document.getElementById("caption");
+            captionText.innerHTML = element.alt;
+        }</script>
+
+</body>
 </html>
