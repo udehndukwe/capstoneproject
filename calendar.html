@@ -1,31 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
-    <script>
-        let calendar;
-
-        document.addEventListener('DOMContentLoaded', async function() {
-            var calendarEl = document.getElementById('calendar');
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth'
-            });
-            calendar.render();
-
-            // After the calendar is rendered, call the function to load events
-            await listUpcomingEvents();
-        });
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    
+    <title>Outlook Calendar Events</title>
+    
 </head>
 <body>
-    <!-- Add buttons to initiate auth sequence and sign out -->
-    <button id="authorize_button" onclick="handleAuthClick()">Sync Google Calendar</button>
-    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+    <div>
+        <!--Buttons for Outlook Calendar Sync-->
+        <button id="signInBtn" onclick="signIn()">Sync Outlook Calendar</button>
+        <button id="signOutBtn" onclick="signOut()" style="display: none;">Sign Out</button>
+     </div>
+     <div>   
+        <!--Buttons for Google Calendar Sync-->
+        <button id="authorize_button" onclick="handleAuthClick()">Sync Google Calendar</button>
+    </div>
+    <div id="calendar"></div>
 
-    <div id='calendar'></div> <!-- Moved the calendar div outside the pre tag -->
-
-    <pre id="content" style="white-space: pre-wrap;"></pre>
+    <!--Google Calendar Code-->
 
     <script type="text/javascript">
         /* exported gapiLoaded */
@@ -102,7 +98,7 @@
                     throw (resp);
                 }
                 document.getElementById('signout_button').style.visibility = 'visible';
-                document.getElementById('authorize_button').innerText = 'Refresh';
+
                 await listUpcomingEvents();
             };
 
@@ -170,7 +166,115 @@
         }
     </script>
 
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+    <script src="https://alcdn.msauth.net/browser/2.15.0/js/msal-browser.min.js"></script>
+    <script>
+        const msalConfig = {
+            auth: {
+                clientId: '69477c43-e5e6-4faf-9894-c4ed05940dae',
+                authority: 'https://login.microsoftonline.com/common',
+                redirectUri: 'http://localhost:3000' // Redirect URI of your app
+            },
+            cache: {
+                cacheLocation: "localStorage",
+                storeAuthStateInCookie: false
+            }
+        };
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        const graphConfig = {
+            graphMeEndpoint: 'https://graph.microsoft.com/v1.0/me',
+            graphCalendarEndpoint: 'https://graph.microsoft.com/v1.0/me/calendarView'
+        };
+
+        const calendarEl = document.getElementById('calendar');
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: [],
+            eventClick: function (info) {
+                // Handle event click if needed
+                console.log('Event clicked:', info.event);
+            }
+        });
+
+        async function signIn() {
+            try {
+                const authResult = await msalInstance.loginPopup();
+                if (authResult) {
+                    // Fetch calendar events after successful sign-in
+                    const events = await fetchCalendarEvents(authResult.accessToken);
+                    calendar.addEventSource(events);
+                    document.getElementById('signInBtn').style.display = 'none';
+                    document.getElementById('signOutBtn').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error signing in:', error);
+            }
+        }
+
+        async function signOut() {
+            try {
+                await msalInstance.logoutPopup();
+                calendar.removeAllEvents();
+                document.getElementById('signInBtn').style.display = 'block';
+                document.getElementById('signOutBtn').style.display = 'none';
+            } catch (error) {
+                console.error('Error signing out:', error);
+            }
+        }
+
+async function fetchCalendarEvents(accessToken) {
+    try {
+        const response = await fetch(`${graphConfig.graphCalendarEndpoint}?$select=subject,start,end&startDateTime=2023-01-01T00:00:00-08:00&endDateTime=2025-01-02T23:59:59-08:00&top=1000`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+        const data = await response.json();
+        console.log(data);
+
+        // Check if @odata.nextLink is present
+        if (data['@odata.nextLink']) {
+            console.log('Next link:', data['@odata.nextLink']);
+            // Make another request using data['@odata.nextLink'] to retrieve additional data
+        }
+
+        return data.value.map(event => ({
+            title: event.subject,
+            start: event.start.dateTime,
+            end: event.end.dateTime
+        }));
+    } catch (error) {
+        console.error('Error fetching calendar events:', error);
+        return [];
+    }
+}
+
+        msalInstance.handleRedirectPromise().then(handleRedirectResponse).catch(error => {
+            console.error('Error handling redirect:', error);
+        });
+
+        async function handleRedirectResponse(response) {
+            if (response !== null) {
+                // User is authenticated
+                const account = response.account;
+                const accessToken = response.accessToken;
+                // Fetch calendar events after successful sign-in
+                const events = await fetchCalendarEvents(accessToken);
+                calendar.addEventSource(events);
+                document.getElementById('signInBtn').style.display = 'none';
+                document.getElementById('signOutBtn').style.display = 'block';
+            } else {
+                // User is not authenticated
+                console.log('User is not authenticated.');
+            }
+        }
+
+        calendar.render();
+    </script>
+
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
