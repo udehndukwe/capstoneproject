@@ -244,7 +244,7 @@ async function fetchCalendarEvents(accessToken) {
             // Make another request using data['@odata.nextLink'] to retrieve additional data
         }
 
-        return data.value.map(event => ({
+    return data.value?.map(event => ({
             title: event.subject,
             start: event.start.dateTime,
             end: event.end.dateTime
