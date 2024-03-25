@@ -24,6 +24,7 @@ button:hover {
 
 /* Styles for the calendar container */
 #calendar {
+    margin: auto;
     margin-top: 20px;
     margin-right: 200px;
     padding: 20px;
