@@ -1,94 +1,101 @@
-// Client ID and API key from the Developer Console
-var CLIENT_ID = '30103759882-5omonj1s3lamheplnndf3h2qbkso8cvc.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyCjlUHnUqyiFULh9YmvsNu0LYW5KLCsIUU'
+     /* exported gapiLoaded */
+        /* exported gisLoaded */
+        /* exported handleAuthClick */
+        /* exported handleSignoutClick */
 
-// Array of API discovery doc URLs for APIs used by the quickstart
-var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+        // TODO(developer): Set to client ID and API key from the Developer Console
+        const CLIENT_ID = '30103759882-5omonj1s3lamheplnndf3h2qbkso8cvc.apps.googleusercontent.com';
+        const API_KEY = 'AIzaSyCjlUHnUqyiFULh9YmvsNu0LYW5KLCsIUU';
 
-// Authorization scopes required by the API
-var SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+        // Discovery doc URL for APIs used by the quickstart
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
 
-var authorizeButton = document.getElementById('authorize_button');
-var signoutButton = document.getElementById('signout_button');
+        // Authorization scopes required by the API; multiple scopes can be
+        // included, separated by spaces.
+        const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
-/**
- *  On load, called to load the auth2 library and API client library.
- */
-function handleClientLoad() {
-    gapi.load('client:auth2', initClient);
-}
+        let tokenClient;
+        let gapiInited = false;
+        let gisInited = false;
 
-/**
- *  Initializes the API client library and sets up sign-in state
- *  listeners.
- */
-function initClient() {
-    gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-    }).then(function () {
-        // Listen for sign-in state changes.
-        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        document.getElementById('authorize_button').style.visibility = 'hidden';
+        document.getElementById('signout_button').style.visibility = 'hidden';
 
-        // Handle the initial sign-in state.
-        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-    }, function(error) {
-        console.log(JSON.stringify(error, null, 2));
-    });
-}
-
-/**
- *  Called when the signed in status changes, to update the UI
- *  appropriately. After a sign-in, the API is called.
- */
-function updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-        listFiles();
-    }
-}
-
-/**
- *  Sign in the user upon button click.
- */
-function authenticate() {
-    return gapi.auth2.getAuthInstance().signIn();
-}
-
-/**
- *  Sign out the user upon button click.
- */
-function signout() {
-    return gapi.auth2.getAuthInstance().signOut();
-}
-
-/**
- * Print files.
- */
-function listFiles() {
-    gapi.client.drive.files.list({
-        'pageSize': 10,
-        'fields': "nextPageToken, files(id, name)"
-    }).then(function(response) {
-        var files = response.result.files;
-        document.getElementById('fileList').innerHTML = '';
-        if (files && files.length > 0) {
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                document.getElementById('fileList').appendChild(createFileElement(file.name));
-            }
-        } else {
-            document.getElementById('fileList').appendChild(document.createTextNode('No files found.'));
+        /**
+         * Callback after api.js is loaded.
+         */
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
         }
-    });
-}
 
-/**
- * Create file element.
- */
-function createFileElement(name) {
-    var li = document.createElement('li');
-    li.appendChild(document.createTextNode(name));
-    return li;
-}
+        /**
+         * Callback after the API client is loaded. Loads the
+         * discovery doc to initialize the API.
+         */
+        async function initializeGapiClient() {
+            await gapi.client.init({
+                apiKey: API_KEY,
+                discoveryDocs: [DISCOVERY_DOC],
+            });
+            gapiInited = true;
+            maybeEnableButtons();
+        }
+
+        /**
+         * Callback after Google Identity Services are loaded.
+         */
+        function gisLoaded() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: '', // defined later
+            });
+            gisInited = true;
+            maybeEnableButtons();
+        }
+
+        /**
+         * Enables user interaction after all libraries are loaded.
+         */
+        function maybeEnableButtons() {
+            if (gapiInited && gisInited) {
+                document.getElementById('authorize_button').style.visibility = 'visible';
+            }
+        }
+
+        /**
+         *  Sign in the user upon button click.
+         */
+        function handleAuthClick() {
+            tokenClient.callback = async (resp) => {
+                if (resp.error !== undefined) {
+                    throw (resp);
+                }
+                document.getElementById('signout_button').style.visibility = 'visible';
+
+            };
+
+            if (gapi.client.getToken() === null) {
+                // Prompt the user to select a Google Account and ask for consent to share their data
+                // when establishing a new session.
+                tokenClient.requestAccessToken({prompt: 'consent'});
+            } else {
+                // Skip display of account chooser and consent dialog for an existing session.
+                tokenClient.requestAccessToken({prompt: ''});
+            }
+        }
+
+        /**
+         *  Sign out the user upon button click.
+         */
+        function handleSignoutClick() {
+            const token = gapi.client.getToken();
+            if (token !== null) {
+                google.accounts.oauth2.revoke(token.access_token);
+                gapi.client.setToken('');
+                document.getElementById('content').innerText = '';
+                document.getElementById('authorize_button').innerText = 'Authorize';
+                document.getElementById('signout_button').style.visibility = 'hidden';
+
+            }
+        }
