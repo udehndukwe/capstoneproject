@@ -7,36 +7,30 @@
     <link rel="stylesheet" href="styles.css">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    
     <title>Outlook Calendar Events</title>
     
 </head>
-<main>
-   <div class="row">
-    <h1 id="title">File Organ</h1>
-  </div>  
-  <nav>
-		  <ul id="mainMenu">
-			<li><a href="https://fileorgandev.azurewebsites.net/index.html">Home</a></li>
-			<li><a href="https://fileorgandev.azurewebsites.net/calendar.html">Calendar</a></li>
-			<li><a href="https://fileorgandev.azurewebsites.net/contact.html">Contact</a></li>
-		  </ul>
-	  </nav>
-</main>
 <body>
-    <div class="sidebar">
+    <div>
         <!--Buttons for Outlook Calendar Sync-->
-        <button id="signInBtn" onclick="signIn()">Sync Outlook</button>
+        <button id="signInBtn" onclick="signIn()">Sync Outlook Calendar</button>
         <button id="signOutBtn" onclick="signOut()" style="display: none;">Sign Out</button>
+     </div>
+     <div>   
         <!--Buttons for Google Calendar Sync-->
-        <button id="authorize_button" onclick="handleAuthClick()">Sync Google</button>
-        <button id="signout_button" onclick="signOut()">Sign Out</button>
+        <button id="authorize_button" onclick="handleAuthClick()">Sync Google Calendar</button>
+        <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+
+    </div>
+    <div>
         <!--Button to add to Google Calendar-->
         <button id="addEvent" onclick="window.location='https://calendar.google.com/calendar/r?cmd=addevent&amp;t=g&amp;calid=primary&amp;text=My%20Event&amp;details=This%20is%20a%20test%20event.&amp;startdt=2023-08-10T08:00:00&amp;enddt=2023-08-10T09:00:00';">Add Event to Google Calendar</button>
-        <!--Button to add to Outlook Calendar-->
 
-        <!--Link File Organization System-->
-        <button id="fileorgan" onclick="window.location.href='http://localhost:3000/filesystem.html'">File System</button>
-    
+
+    </div>
+    <div>
+        <!--Button to add to Outlook Calendar-->
     </div>
     <div id="calendar"></div>
 
@@ -63,8 +57,6 @@
         let gapiInited = false;
         let gisInited = false;
 
-        document.getElementById('addEvent').style.visibility = 'hidden'
-        document.getElementById('signInBtn').style.visibility = 'hidden'
         document.getElementById('authorize_button').style.visibility = 'hidden';
         document.getElementById('signout_button').style.visibility = 'hidden';
 
@@ -107,8 +99,6 @@
         function maybeEnableButtons() {
             if (gapiInited && gisInited) {
                 document.getElementById('authorize_button').style.visibility = 'visible';
-                document.getElementById('signInBtn').style.visibility = 'visible';
-                
             }
         }
 
@@ -121,7 +111,7 @@
                     throw (resp);
                 }
                 document.getElementById('signout_button').style.visibility = 'visible';
-                document.getElementById('addEvent').style.visibility = 'visible'
+
                 await listUpcomingEvents();
             };
 
@@ -238,7 +228,7 @@
 
         async function signOut() {
             try {
-                //await msalInstance.logoutPopup();
+                await msalInstance.logoutPopup();
                 calendar.removeAllEvents();
                 document.getElementById('signInBtn').style.display = 'block';
                 document.getElementById('signOutBtn').style.display = 'none';
