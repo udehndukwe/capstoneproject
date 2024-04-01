@@ -1,25 +1,52 @@
 /* Resetting default margin and padding */
 html, body {
-    margin: 0;
+    margin-left: 20px;
     padding: 0;
+    font-family: Trebuchet MS;
     background-color: rgb(255, 255, 255)
+}
+
+#title{ padding-top: 25px;
+  margin-left: 850px;
+}
+
+#buttoncolumn{
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
+#signInBtn{
+  margin-bottom: 25px;
+  
+}
+
+#authorize_button{
+  margin-bottom: 25px;
+}
+.row {
+	height:100%;
+  
+}
+.column { float: middle;
+	display:table;
 }
 
 /* Setting styles for buttons */
 
 button:hover {
-    background-color: #E09743;
+    background-color: #956C52;
 }
 
 button {
     padding: 10px 10px;
-    background-color: #F5CB9A;
+    background-color: #FF9800;
     color: #fff;
     border: none;
     cursor: pointer;
     padding-bottom: 10px; 
     margin-right: 30px;
     float: left;
+    text-color: #fff;
     position: relative; /* Ensure the button's position is relative */
     z-index: 6; /* Set a higher z-index to ensure it appears above other elements */
 }
@@ -29,9 +56,9 @@ button {
     margin: auto;
     margin-top: 20px;
     margin-right: 50px;
-    margin-left: 100px;
+    margin-left: 350px;
     padding: 20px;
-    background: #D5EBE4;
+    background: #D9EDBF;
     border: 1px solid #ccc;
     border-radius: 10px; /* Add rounded corners for a modern look */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
@@ -41,27 +68,28 @@ button {
 
 /* Style for the calendar header */
 .fc-header-toolbar {
-    background-color: #518675; /* Set background color for the calendar header */
+    background-color: #2C7865; /* Set background color for the calendar header */
     color: #fff; /* Set text color for the calendar header */
     border-radius: 10px 10px 0 0; /* Round the top corners */
     position: relative; /* Ensure the header's position is relative */
     z-index: 4; /* Set a higher z-index to ensure it appears above the calendar */
+    padding-left: 15px;
 }
 
 /* Style for the calendar button */
 .fc-button {
-    background-color: transparent;
-    color: #de7d0f;
+    background-color: #956C52;
+    color: #956C52;
     border: none;
     border-radius: 5px;
-    padding: 5px 10px;
-    margin: 0 5px;
+    padding-left: 5px;
+    margin-left: 5px;
     position: relative; /* Ensure the button's position is relative */
     z-index: 4; /* Set a higher z-index to ensure it appears above other elements */
 }
 
 .fc-button:hover {
-    background-color: rgba(0, 123, 255, 0.1);
+    background-color: #956C52;
 }
 
 /* Style for the calendar events */
@@ -77,18 +105,18 @@ button {
 /* Style for today's date */
 .fc-day-today {
     background-color: #007bff;
-    color: #bc1414;
-    border-radius: 50%;
+    color: #04411B;
+    border-color: 
 }
 
 /* Style for the day cells */
 .fc-day {
-    border: 1px solid #ccc;
+    border: 1px solid #de7d0f;
 }
 
 /* Style for the day headers */
 .fc-day-header {
-    background-color: #F5CB9A;
+    background-color: #956C52;
     border: 1px solid #ccc;
     padding: 5px;
 }
