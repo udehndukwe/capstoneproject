@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="styles.css">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    
+    <title>Contact Us</title>
+</head>
+
+<body>
+    <div class="row">
+    <h1 id="contact-title">Contact Us</h1>
+        </div>
+
+    
+        <main>
+     <nav>
+<ul id="mainMenu">
+<li><a href="">Home</a></li>
+<li><a href="">Calendar</a></li>
+<li><a href="">File System</a></li>
+<li><a href="">Contact</a></li>
+</ul>
+</nav>
+            <div id="contact-message">
+        <h2>Have a question for us? Message the FileOrgan Team!</h2>
+        <h3>Fill out the form below if you have information you would like to share, ask or get clarification and examples. </h3>
+        <p>Required fields marked with an astrisk. *</p>
+            </div>    
+            
+        <form>
+            <label for="FName">*First Name</label>
+            <input type="text" id="FName" name="FName" required="required">
+            
+            <label for="LName">*Last Name</label>
+            <input type="text" id="LName" name="LName" required="required">
+            
+            <label for="email">*Email</label>
+            <input type="email" id="email" name="email" size="40" required="required">
+            
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" maxlength="12">
+            
+            <label for="message">*Message</label>
+            <textarea id="message" name="message" rows="2" cols="30" required="required"></textarea> 
+            
+            <input type="submit" value="submit">
+        </form>
+       
+    </main>
+    <footer>
+    <p><small>Copyright &copy; 2023 University of Cincinnati, IT Expo 2024<a href="bensoneo@mail.uc.edu"> bensoneo@mail.uc.edu</a></small></p>
+    
+    
+</footer>
+</body>
+</html>
